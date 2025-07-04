@@ -21,7 +21,7 @@ The Flowise provider supports two usage patterns:
 Create a provider instance that can be reused for multiple chatflows:
 
 ```ts
-import { createFlowiseProvider } from '@ahmedrowaihi/flowise-vercel-ai-sdk-provider'
+import { createFlowiseProvider } from "@ahmedrowaihi/flowise-vercel-ai-sdk-provider";
 ```
 
 ### 2. One-shot Model (Convenient for single chatflow)
@@ -29,7 +29,7 @@ import { createFlowiseProvider } from '@ahmedrowaihi/flowise-vercel-ai-sdk-provi
 Create a model instance directly with credentials and chatflow ID:
 
 ```ts
-import { createFlowiseModel } from '@ahmedrowaihi/flowise-vercel-ai-sdk-provider'
+import { createFlowiseModel } from "@ahmedrowaihi/flowise-vercel-ai-sdk-provider";
 ```
 
 ## Quick Start
@@ -44,34 +44,34 @@ FLOWISE_API_KEY=your_api_key_optional
 ```
 
 ```ts
-import { createFlowiseProvider } from '@ahmedrowaihi/flowise-vercel-ai-sdk-provider'
-import { generateText } from 'ai'
+import { createFlowiseProvider } from "@ahmedrowaihi/flowise-vercel-ai-sdk-provider";
+import { generateText } from "ai";
 
 const flowise = createFlowiseProvider({
-    baseUrl: process.env.FLOWISE_BASE_URL,
-    apiKey: process.env.FLOWISE_API_KEY
-})
+  baseUrl: process.env.FLOWISE_BASE_URL,
+  apiKey: process.env.FLOWISE_API_KEY,
+});
 
 const { text } = await generateText({
-    model: flowise('your-chatflow-id'),
-    prompt: 'Write a vegetarian lasagna recipe for 4 people.'
-})
+  model: flowise("your-chatflow-id"),
+  prompt: "Write a vegetarian lasagna recipe for 4 people.",
+});
 ```
 
 ### Using One-shot Model
 
 ```ts
-import { createFlowiseModel } from '@ahmedrowaihi/flowise-vercel-ai-sdk-provider'
-import { generateText } from 'ai'
+import { createFlowiseModel } from "@ahmedrowaihi/flowise-vercel-ai-sdk-provider";
+import { generateText } from "ai";
 
 const { text } = await generateText({
-    model: createFlowiseModel({
-        baseUrl: process.env.FLOWISE_BASE_URL,
-        apiKey: process.env.FLOWISE_API_KEY,
-        chatflowId: 'your-chatflow-id'
-    }),
-    prompt: 'Write a vegetarian lasagna recipe for 4 people.'
-})
+  model: createFlowiseModel({
+    baseUrl: process.env.FLOWISE_BASE_URL,
+    apiKey: process.env.FLOWISE_API_KEY,
+    chatflowId: "your-chatflow-id",
+  }),
+  prompt: "Write a vegetarian lasagna recipe for 4 people.",
+});
 ```
 
 ### Local Flowise instance (<http://localhost:3000>)
@@ -79,32 +79,32 @@ const { text } = await generateText({
 **With reusable provider:**
 
 ```ts
-import { createFlowiseProvider } from '@ahmedrowaihi/flowise-vercel-ai-sdk-provider'
-import { generateText } from 'ai'
+import { createFlowiseProvider } from "@ahmedrowaihi/flowise-vercel-ai-sdk-provider";
+import { generateText } from "ai";
 
 const flowise = createFlowiseProvider({
-    baseUrl: 'http://localhost:3000'
-})
+  baseUrl: "http://localhost:3000",
+});
 
 const { text } = await generateText({
-    model: flowise('your-chatflow-id'),
-    prompt: 'Write a vegetarian lasagna recipe for 4 people.'
-})
+  model: flowise("your-chatflow-id"),
+  prompt: "Write a vegetarian lasagna recipe for 4 people.",
+});
 ```
 
 **With one-shot model:**
 
 ```ts
-import { createFlowiseModel } from '@ahmedrowaihi/flowise-vercel-ai-sdk-provider'
-import { generateText } from 'ai'
+import { createFlowiseModel } from "@ahmedrowaihi/flowise-vercel-ai-sdk-provider";
+import { generateText } from "ai";
 
 const { text } = await generateText({
-    model: createFlowiseModel({
-        baseUrl: 'http://localhost:3000',
-        chatflowId: 'your-chatflow-id'
-    }),
-    prompt: 'Write a vegetarian lasagna recipe for 4 people.'
-})
+  model: createFlowiseModel({
+    baseUrl: "http://localhost:3000",
+    chatflowId: "your-chatflow-id",
+  }),
+  prompt: "Write a vegetarian lasagna recipe for 4 people.",
+});
 ```
 
 ### Using Streaming
@@ -112,38 +112,38 @@ const { text } = await generateText({
 **With reusable provider:**
 
 ```ts
-import { streamText } from 'ai'
-import { createFlowiseProvider } from '@ahmedrowaihi/flowise-vercel-ai-sdk-provider'
+import { streamText } from "ai";
+import { createFlowiseProvider } from "@ahmedrowaihi/flowise-vercel-ai-sdk-provider";
 
 const flowise = createFlowiseProvider({
-    baseUrl: process.env.FLOWISE_BASE_URL,
-    apiKey: process.env.FLOWISE_API_KEY
-})
+  baseUrl: process.env.FLOWISE_BASE_URL,
+  apiKey: process.env.FLOWISE_API_KEY,
+});
 
 const result = streamText({
-    model: flowise('your-chatflow-id'),
-    prompt: 'Write a story about a robot learning to cook.'
-})
+  model: flowise("your-chatflow-id"),
+  prompt: "Write a story about a robot learning to cook.",
+});
 
-return result.toDataStreamResponse()
+return result.toDataStreamResponse();
 ```
 
 **With one-shot model:**
 
 ```ts
-import { streamText } from 'ai'
-import { createFlowiseModel } from '@ahmedrowaihi/flowise-vercel-ai-sdk-provider'
+import { streamText } from "ai";
+import { createFlowiseModel } from "@ahmedrowaihi/flowise-vercel-ai-sdk-provider";
 
 const result = streamText({
-    model: createFlowiseModel({
-        baseUrl: process.env.FLOWISE_BASE_URL,
-        apiKey: process.env.FLOWISE_API_KEY,
-        chatflowId: 'your-chatflow-id'
-    }),
-    prompt: 'Write a story about a robot learning to cook.'
-})
+  model: createFlowiseModel({
+    baseUrl: process.env.FLOWISE_BASE_URL,
+    apiKey: process.env.FLOWISE_API_KEY,
+    chatflowId: "your-chatflow-id",
+  }),
+  prompt: "Write a story about a robot learning to cook.",
+});
 
-return result.toDataStreamResponse()
+return result.toDataStreamResponse();
 ```
 
 ### Using other Flowise Client Functions
@@ -151,18 +151,20 @@ return result.toDataStreamResponse()
 The `vercel-ai-sdk-provider` extends the Flowise client, you can access the operations directly by using `flowise.client` or your custom generated client:
 
 ```ts
-import { createFlowiseProvider } from '@ahmedrowaihi/flowise-vercel-ai-sdk-provider'
+import { createFlowiseProvider } from "@ahmedrowaihi/flowise-vercel-ai-sdk-provider";
 
 const flowise = createFlowiseProvider({
-    baseUrl: process.env.FLOWISE_BASE_URL,
-    apiKey: process.env.FLOWISE_API_KEY
-})
+  baseUrl: process.env.FLOWISE_BASE_URL,
+  apiKey: process.env.FLOWISE_API_KEY,
+});
 
 // Check if a chatflow supports streaming
-const streamingInfo = await flowise.client.checkChatflowStreaming('your-chatflow-id')
+const streamingInfo = await flowise.client.checkChatflowStreaming(
+  "your-chatflow-id"
+);
 
 // Get chatflow details
-const chatflow = await flowise.client.getChatflow('your-chatflow-id')
+const chatflow = await flowise.client.getChatflow("your-chatflow-id");
 ```
 
 ## Environment Variables
@@ -176,13 +178,16 @@ const chatflow = await flowise.client.getChatflow('your-chatflow-id')
 
 ## Features
 
--   ✅ **Chatflow Execution**: Execute any Flowise chatflow as a language model
--   ✅ **Streaming Support**: Real-time streaming responses from Flowise
--   ✅ **File Uploads**: Support for file uploads in chatflows
--   ✅ **Custom Variables**: Pass custom variables to chatflows
--   ✅ **Memory Support**: Automatic session management
--   ✅ **Tool Calls**: Support for tool execution in agent flows
--   ✅ **Error Handling**: Comprehensive error handling and validation
+- ✅ **Chatflow Execution**: Execute any Flowise chatflow as a language model
+- ✅ **Streaming Support**: Real-time streaming responses from Flowise
+- ✅ **Non-Streaming Support**: Support for standard (non-streaming) responses from Flowise
+- ⚠️ **File Uploads**: Not supported in the SDK
+- ⚠️ **Custom Variables**: Not supported in the SDK
+- ⚠️ **Memory Support**: Not supported in the SDK
+- ⚠️ **Tool Calls**: Not supported in the SDK
+- ⚠️ **Error Handling**: Only basic error handling (API errors are thrown)
+
+> **Note:** Advanced features like file uploads, custom variables, memory/session management, and tool calls are not currently supported by the SDK itself. These may be implemented in your application logic or in future SDK versions.
 
 ## API Reference
 
@@ -192,9 +197,9 @@ Creates a new Flowise provider instance that can be reused for multiple chatflow
 
 **Options:**
 
--   `baseUrl: string` - The base URL of your Flowise instance (required)
--   `apiKey?: string` - Your Flowise API key (optional)
--   `timeout?: number` - Request timeout in milliseconds (default: 30000)
+- `baseUrl: string` - The base URL of your Flowise instance (required)
+- `apiKey?: string` - Your Flowise API key (optional)
+- `timeout?: number` - Request timeout in milliseconds (default: 30000)
 
 **Returns:** A provider function that accepts a `chatflowId` and returns a model instance.
 
@@ -204,10 +209,10 @@ Creates a Flowise model instance directly with credentials and chatflow ID.
 
 **Options:**
 
--   `baseUrl: string` - The base URL of your Flowise instance (required)
--   `apiKey?: string` - Your Flowise API key (optional)
--   `timeout?: number` - Request timeout in milliseconds (default: 30000)
--   `chatflowId: string` - The ID of the chatflow to use (required)
+- `baseUrl: string` - The base URL of your Flowise instance (required)
+- `apiKey?: string` - Your Flowise API key (optional)
+- `timeout?: number` - Request timeout in milliseconds (default: 30000)
+- `chatflowId: string` - The ID of the chatflow to use (required)
 
 **Returns:** A model instance ready to use with AI SDK functions.
 
@@ -227,27 +232,27 @@ Converts AI SDK prompts to Flowise message format.
 
 ```ts
 // app/api/chat/route.ts
-import { streamText } from 'ai'
-import { createFlowiseProvider } from '@ahmedrowaihi/flowise-vercel-ai-sdk-provider'
+import { streamText } from "ai";
+import { createFlowiseProvider } from "@ahmedrowaihi/flowise-vercel-ai-sdk-provider";
 
 const flowise = createFlowiseProvider({
-    baseUrl: process.env.FLOWISE_BASE_URL,
-    apiKey: process.env.FLOWISE_API_KEY
-})
+  baseUrl: process.env.FLOWISE_BASE_URL,
+  apiKey: process.env.FLOWISE_API_KEY,
+});
 
 export async function POST(req: Request) {
-    const { messages } = await req.json()
+  const { messages } = await req.json();
 
-    if (!process.env.FLOWISE_CHATFLOW_ID) {
-        throw new Error('Missing FLOWISE_CHATFLOW_ID environment variable')
-    }
+  if (!process.env.FLOWISE_CHATFLOW_ID) {
+    throw new Error("Missing FLOWISE_CHATFLOW_ID environment variable");
+  }
 
-    const result = streamText({
-        model: flowise(process.env.FLOWISE_CHATFLOW_ID),
-        messages
-    })
+  const result = streamText({
+    model: flowise(process.env.FLOWISE_CHATFLOW_ID),
+    messages,
+  });
 
-    return result.toDataStreamResponse()
+  return result.toDataStreamResponse();
 }
 ```
 
@@ -255,26 +260,26 @@ export async function POST(req: Request) {
 
 ```ts
 // app/api/chat/route.ts
-import { streamText } from 'ai'
-import { createFlowiseModel } from '@ahmedrowaihi/flowise-vercel-ai-sdk-provider'
+import { streamText } from "ai";
+import { createFlowiseModel } from "@ahmedrowaihi/flowise-vercel-ai-sdk-provider";
 
 export async function POST(req: Request) {
-    const { messages } = await req.json()
+  const { messages } = await req.json();
 
-    if (!process.env.FLOWISE_CHATFLOW_ID) {
-        throw new Error('Missing FLOWISE_CHATFLOW_ID environment variable')
-    }
+  if (!process.env.FLOWISE_CHATFLOW_ID) {
+    throw new Error("Missing FLOWISE_CHATFLOW_ID environment variable");
+  }
 
-    const result = streamText({
-        model: createFlowiseModel({
-            baseUrl: process.env.FLOWISE_BASE_URL,
-            apiKey: process.env.FLOWISE_API_KEY,
-            chatflowId: process.env.FLOWISE_CHATFLOW_ID
-        }),
-        messages
-    })
+  const result = streamText({
+    model: createFlowiseModel({
+      baseUrl: process.env.FLOWISE_BASE_URL,
+      apiKey: process.env.FLOWISE_API_KEY,
+      chatflowId: process.env.FLOWISE_CHATFLOW_ID,
+    }),
+    messages,
+  });
 
-    return result.toDataStreamResponse()
+  return result.toDataStreamResponse();
 }
 ```
 
@@ -284,35 +289,39 @@ export async function POST(req: Request) {
 
 ```tsx
 // components/Chat.tsx
-'use client'
+"use client";
 
-import { useChat } from '@ai-sdk/react'
-import { createFlowiseProvider } from '@ahmedrowaihi/flowise-vercel-ai-sdk-provider'
+import { useChat } from "@ai-sdk/react";
+import { createFlowiseProvider } from "@ahmedrowaihi/flowise-vercel-ai-sdk-provider";
 
 const flowise = createFlowiseProvider({
-    baseUrl: process.env.FLOWISE_BASE_URL,
-    apiKey: process.env.FLOWISE_API_KEY
-})
+  baseUrl: process.env.FLOWISE_BASE_URL,
+  apiKey: process.env.FLOWISE_API_KEY,
+});
 
 export function Chat() {
-    const { messages, input, handleInputChange, handleSubmit } = useChat({
-        api: '/api/chat'
-    })
+  const { messages, input, handleInputChange, handleSubmit } = useChat({
+    api: "/api/chat",
+  });
 
-    return (
-        <div>
-            {messages.map((message) => (
-                <div key={message.id}>
-                    {message.role === 'user' ? 'User: ' : 'AI: '}
-                    {message.content}
-                </div>
-            ))}
-
-            <form onSubmit={handleSubmit}>
-                <input value={input} onChange={handleInputChange} placeholder='Say something...' />
-            </form>
+  return (
+    <div>
+      {messages.map((message) => (
+        <div key={message.id}>
+          {message.role === "user" ? "User: " : "AI: "}
+          {message.content}
         </div>
-    )
+      ))}
+
+      <form onSubmit={handleSubmit}>
+        <input
+          value={input}
+          onChange={handleInputChange}
+          placeholder="Say something..."
+        />
+      </form>
+    </div>
+  );
 }
 ```
 
@@ -326,7 +335,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Contributors
 
--   **[Ahmed Rowaihi](https://github.com/ahmedrowaihi)** - _Initial work_ - [@ahmedrowaihi](https://github.com/ahmedrowaihi)
+- **[Ahmed Rowaihi](https://github.com/ahmedrowaihi)** - _Initial work_ - [@ahmedrowaihi](https://github.com/ahmedrowaihi)
 
 ## Acknowledgments
 

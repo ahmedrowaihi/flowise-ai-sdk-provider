@@ -183,13 +183,104 @@ const chatflow = await flowise.client.getChatflow("your-chatflow-id");
 - ✅ **Chatflow Execution**: Execute any Flowise chatflow as a language model
 - ✅ **Streaming Support**: Real-time streaming responses from Flowise
 - ✅ **Non-Streaming Support**: Support for standard (non-streaming) responses from Flowise
-- ⚠️ **File Uploads**: Not supported in the SDK
+- ✅ **File Uploads**: Supported — Native file uploads, including PDF/text extraction via Flowise attachment API
 - ⚠️ **Custom Variables**: Not supported in the SDK
 - ⚠️ **Memory Support**: Not supported in the SDK
 - ⚠️ **Tool Calls**: Not supported in the SDK
 - ⚠️ **Error Handling**: Only basic error handling (API errors are thrown)
 
-> **Note:** Advanced features like file uploads, custom variables, memory/session management, and tool calls are not currently supported by the SDK itself. These may be implemented in your application logic or in future SDK versions.
+## File Uploads & Attachments
+
+The Flowise provider now natively supports file uploads in prompts. You can include any valid AI SDK `FilePart` (Buffer, Uint8Array, ArrayBuffer, base64 string, data URL, or URL) in your prompt, and the SDK will:
+
+- Automatically convert and upload files as needed
+- Dynamically select the correct upload type (e.g., `file:full` for PDFs)
+- Preprocess files via the Flowise attachment API for extraction (e.g., extract text from PDFs)
+- Handle chat session IDs (`chatId`) for multi-turn conversations or file association
+
+**Minimal Example:**
+
+```ts
+import { createFlowiseProvider } from "@ahmedrowaihi/flowise-vercel-ai-sdk-provider";
+import { generateText } from "ai";
+
+const flowise = createFlowiseProvider({
+  baseUrl: process.env.FLOWISE_BASE_URL,
+  apiKey: process.env.FLOWISE_API_KEY,
+});
+
+const fileBuffer = Buffer.from(
+  "This is a test file for Flowise upload.",
+  "utf-8"
+);
+
+const { text } = await generateText({
+  model: flowise("your-chatflow-id"),
+  prompt: [
+    {
+      role: "user",
+      content: [
+        { type: "text", text: "Please analyze the attached file." },
+        {
+          type: "file",
+          filename: "test.txt",
+          data: fileBuffer, // Buffer, ArrayBuffer, base64, or URL
+          mediaType: "text/plain",
+        },
+      ],
+    },
+  ],
+});
+console.log("AI response:", text);
+```
+
+**PDF Example:**
+
+```ts
+const pdfBuffer = fs.readFileSync("./sample.pdf");
+const { text } = await generateText({
+  model: flowise("your-chatflow-id"),
+  prompt: [
+    {
+      role: "user",
+      content: [
+        { type: "text", text: "Summarize the PDF." },
+        {
+          type: "file",
+          filename: "sample.pdf",
+          data: pdfBuffer,
+          mediaType: "application/pdf",
+        },
+      ],
+    },
+  ],
+});
+```
+
+**Session Control:**
+
+You can control chat session continuity by passing a `chatId` in `providerOptions`:
+
+```ts
+const { text } = await generateText({
+  model: flowise("your-chatflow-id"),
+  providerOptions: {
+    chatId: "your-session-uuid" // optional
+  },
+  prompt: [...]
+});
+```
+
+The SDK will use this `chatId` for both file extraction and prediction, ensuring session continuity.
+
+> **Note:**
+> The `chatId` is **optional**. If you do not provide one, the SDK will automatically generate a unique `chatId` as needed (for file uploads or session continuity). You only need to specify `chatId` if you want to control or resume a specific chat session.
+
+---
+
+**Type Safety & Modularity:**
+
+This SDK is now fully type-safe and modular. All upload, config, and attachment logic is decoupled into separate utilities for maintainability and extensibility. Advanced users can extend or swap out these modules as needed.
 
 ## API Reference
 
@@ -352,5 +443,31 @@ npm i https://pkg.pr.new/ahmedrowaihi/flowise-ai-sdk-provider/flowise-ai-sdk-pro
 ```
 
 Replace `<commit>` with the commit hash from the PR comment.
+
+---
+
+### File Upload Modes
+
+Flowise supports several file upload modes, which determine how files are processed and made available to the LLM:
+
+| Mode        | Description                                                                       | SDK Support  |
+| ----------- | --------------------------------------------------------------------------------- | ------------ |
+| `file`      | Standard file upload (e.g., images, text files)                                   | ✅ Yes       |
+| `file:full` | Full file extraction (e.g., PDFs, DOCX; content is extracted and sent to the LLM) | ✅ Yes       |
+| `file:rag`  | Retrieval-augmented generation (RAG) file upload (for chunked retrieval)          | ✅ Yes       |
+| `audio`     | Audio file upload (for transcription, if supported by chatflow)                   | ⚠️ Partial\* |
+
+\*Audio uploads are supported if your Flowise chatflow is configured to process audio files, but the SDK does not perform audio transcription itself.
+
+#### How the SDK Chooses the Upload Mode
+
+The SDK automatically determines the correct upload mode for each file based on your chatflow's configuration:
+
+- If `fullFileUpload.status` is enabled, files like PDFs are uploaded as `file:full` and preprocessed via the Flowise attachment API for content extraction.
+- If RAG is enabled, files are uploaded as `file:rag`.
+- Images and standard files use `file` mode.
+- The SDK validates file type and size against your chatflow's constraints and will warn if a file is not allowed.
+
+You do not need to manually specify the upload mode—the SDK handles this for you.
 
 ---

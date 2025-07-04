@@ -10,6 +10,17 @@ export function generateUUID(): string {
 	});
 }
 
+export async function fetchFileAsBase64(
+	url: string,
+	mimeType?: string,
+): Promise<string> {
+	const res = await fetch(url);
+	if (!res.ok) throw new Error(`Failed to fetch file: ${url}`);
+	const arrayBuffer = await res.arrayBuffer();
+	const base64 = Buffer.from(arrayBuffer).toString("base64");
+	return `data:${mimeType || res.headers.get("content-type") || "application/octet-stream"};base64,${base64}`;
+}
+
 export interface Logger {
 	debug: (...args: Parameters<typeof console.debug>) => void;
 	warn: (...args: Parameters<typeof console.warn>) => void;

@@ -1,5 +1,7 @@
-import { createFlowiseProvider, createFlowiseModel } from '../src'
-import { streamText, generateText } from "ai";
+import { generateText, streamText } from "ai";
+import { createFlowiseModel, createFlowiseProvider } from '../src';
+import fs from 'fs';
+import path from 'path';
 
 // Helper to get required env vars
 function getEnv(name: 'FLOWISE_BASE_URL' | 'FLOWISE_API_KEY' | 'FLOWISE_CHATFLOW_ID'): string {
@@ -73,9 +75,81 @@ async function oneShotModelExample() {
     }
 }
 
+async function minimalFileAttachmentExample() {
+    const flowise = createFlowiseProvider({
+        baseUrl: BASE_URL,
+        apiKey: API_KEY
+    });
+    const chatflowId = CHATFLOW_ID;
+
+    // Create a text file in memory for testing
+    const fileBuffer = Buffer.from('This is a test file for Flowise upload.', 'utf-8');
+
+    // Just include the file in the prompt—nothing else needed!
+    const response = await generateText({
+        model: flowise(chatflowId),
+        prompt: [
+            {
+                role: 'user',
+                content: [
+                    { type: 'text', text: 'Please analyze the attached text file.' },
+                    {
+                        type: 'file',
+                        filename: 'test.txt',
+                        data: fileBuffer, // Buffer, ArrayBuffer, or base64 string
+                        mediaType: 'text/plain'
+                    }
+                ]
+            }
+        ]
+    });
+
+    console.log('AI response:', response.text);
+}
+
+async function pdfFileAttachmentExample() {
+    const flowise = createFlowiseProvider({
+        baseUrl: BASE_URL,
+        apiKey: API_KEY,
+        logger: console,
+    });
+    const chatflowId = CHATFLOW_ID;
+
+    // Load a PDF file from disk (ensure test.pdf exists in the same directory)
+    const pdfPath = path.join(__dirname, 'sample.pdf');
+    if (!fs.existsSync(pdfPath)) {
+        console.error('Missing sample.pdf in the example directory. Please add a PDF file named sample.pdf.');
+        process.exit(1);
+    }
+    const pdfBuffer = fs.readFileSync(pdfPath);
+
+    const response = await generateText({
+        model: flowise(chatflowId),
+        providerOptions: {
+            
+        },
+        prompt: [
+            {
+                role: 'user',
+                content: [
+                    { type: 'text', text: 'tell me the content of the pdf file.' },
+                    {
+                        type: 'file',
+                        filename: 'sample.pdf',
+                        data: pdfBuffer,
+                        mediaType: 'application/pdf'
+                    }
+                ]
+            }
+        ]
+    });
+
+    console.log(response.text);
+}
+
 if (require.main === module) {
     console.log('🚀 Running Flowise AI SDK Provider Examples...\n')
-    const arg = process.argv.find((a) => a === 'stream' || a === 'oneshot' || a === 'basic')
+    const arg = process.argv.find((a) => a === 'stream' || a === 'oneshot' || a === 'basic' || a === 'upload' || a === 'pdf')
     switch (arg) {
         case 'stream':
             streamingExample().catch(console.error)
@@ -86,8 +160,14 @@ if (require.main === module) {
         case 'basic':
             basicExample().catch(console.error)
             break
+        case 'upload':
+            minimalFileAttachmentExample().catch(console.error)
+            break
+        case 'pdf':
+            pdfFileAttachmentExample().catch(console.error)
+            break
         default:
-            console.log('Usage: node simple-usage.js [basic|stream|oneshot]')
+            console.log('Usage: node simple-usage.js [basic|stream|oneshot|upload|pdf]')
             process.exit(1)
     }
 }

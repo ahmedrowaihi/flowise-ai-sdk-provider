@@ -29,6 +29,8 @@ export function createFlowiseProvider(
 			client,
 			chatflowId,
 			logger,
+			baseUrl: clientOptions.baseUrl,
+			apiKey: clientOptions.apiKey,
 		});
 
 	function providerFn(chatflowId: string) {

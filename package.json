@@ -41,19 +41,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/flowiseai/flowise.git"
+    "url": "git+https://github.com/ahmedrowaihi/flowise-ai-sdk-provider.git"
   },
   "bugs": {
-    "url": "https://github.com/flowiseai/flowise/issues"
+    "url": "https://github.com/ahmedrowaihi/flowise-ai-sdk-provider/issues"
   },
-  "description": "Flowise Vercel AI SDK Provider",
+  "description": "Flowise AI SDK Provider",
   "engines": {
     "node": ">=18"
   },
   "files": [
     "dist"
   ],
-  "homepage": "https://dev.ahmedrowaihi.lol",
+  "homepage": "https://github.com/ahmedrowaihi/flowise-ai-sdk-provider#readme",
   "keywords": [
     "ai",
     "flowise",

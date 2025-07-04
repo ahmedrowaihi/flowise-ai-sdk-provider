@@ -1,5 +1,22 @@
+# Build output
+/dist/
+
+# Bun lockfile
+bun.lock
+
+# Node modules (if ever used)
+node_modules/
+
+# Logs
+*.log
+
+# OS files
 .DS_Store
-node_modules
+
+# IDE/editor files
+.vscode/
+.idea/
+
 .turbo
 *.log
 .next

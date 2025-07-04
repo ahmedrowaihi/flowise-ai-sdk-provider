@@ -1,3 +1,5 @@
+[![pkg.pr.new](https://pkg.pr.new/badge/ahmedrowaihi/flowise-ai-sdk-provider)](https://pkg.pr.new/~/ahmedrowaihi/flowise-ai-sdk-provider)
+
 # AI SDK - Flowise Provider
 
 ![NPM Version](https://img.shields.io/npm/v/%40ahmedrowaihi%2Fvercel-ai-sdk-provider)
@@ -340,3 +342,15 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## Acknowledgments
 
 was inspired by [@letta-ai/vercel-ai-sdk-provider](https://www.npmjs.com/package/@letta-ai/vercel-ai-sdk-provider) maintained by [cpacker](mailto:packercharles@gmail.com) and [4shub](mailto:shub@shub.club). Their excellent work on the Letta AI SDK provider served as a reference for implementing this Flowise provider.
+
+## PR Preview Packages
+
+Every pull request automatically builds a preview package. To install a preview from a PR, use the link provided in the PR comment by pkg.pr.new, for example:
+
+```
+npm i https://pkg.pr.new/ahmedrowaihi/flowise-ai-sdk-provider/flowise-ai-sdk-provider@<commit>
+```
+
+Replace `<commit>` with the commit hash from the PR comment.
+
+---

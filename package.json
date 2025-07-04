@@ -33,6 +33,7 @@
 	"devDependencies": {
 		"@biomejs/biome": "2.0.6",
 		"@types/bun": "latest",
+		"pkg-pr-new": "^0.0.54",
 		"unbuild": "^3.5.0"
 	},
 	"peerDependencies": {

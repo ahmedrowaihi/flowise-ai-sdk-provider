@@ -2,7 +2,7 @@
 
 # AI SDK - Flowise Provider
 
-![NPM Version](https://img.shields.io/npm/v/%40ahmedrowaihi%2Fvercel-ai-sdk-provider)
+![NPM Version](https://img.shields.io/npm/v/@ahmedrowaihi/flowise-vercel-ai-sdk-provider)
 
 ## Setup
 

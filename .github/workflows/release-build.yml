@@ -22,3 +22,22 @@ jobs:
 
       - name: Build
         run: bun run build
+
+      - name: Generate release notes
+        id: changelog
+        run: |
+          echo '## Changelog' > RELEASE_BODY.md
+          if [ -f CHANGELOG.md ]; then
+            awk '/^## /{if (p) exit; p=1} p' CHANGELOG.md >> RELEASE_BODY.md
+          fi
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: ${{ github.ref_name }}
+          body_path: RELEASE_BODY.md
+          draft: false
+          prerelease: false

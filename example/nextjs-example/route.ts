@@ -16,10 +16,13 @@ export async function POST(req: Request) {
         throw new Error('Missing FLOWISE_CHATFLOW_ID environment variable')
     }
 
+    // Use the provider as a function to get the model for the chatflowId
+    const model = flowise(process.env.FLOWISE_CHATFLOW_ID!)
+
     const result = streamText({
-        model: flowise(process.env.FLOWISE_CHATFLOW_ID!),
+        model,
         messages
     })
 
-    return result.toDataStreamResponse()
+    return result.toTextStreamResponse()
 }

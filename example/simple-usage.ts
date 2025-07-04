@@ -21,9 +21,11 @@ async function basicExample() {
         apiKey: API_KEY
     })
     try {
-        const response = await flowise.client.predict(CHATFLOW_ID, {
+        const response = await flowise.client.createPrediction({
+            chatflowId: CHATFLOW_ID,
             question: 'Write a short story about a robot learning to cook.',
-            chatId: 'session-123'
+            chatId: 'session-123',
+            streaming: false
         })
         console.log('Generated text:', response.text)
         console.log('Chat ID:', response.chatId)
@@ -39,14 +41,16 @@ async function customConfigExample() {
         apiKey: API_KEY
     })
     try {
-        const response = await flowise.client.predict(CHATFLOW_ID, {
+        const response = await flowise.client.createPrediction({
+            chatflowId: CHATFLOW_ID,
             question: 'What is the weather like?',
             chatId: 'weather-session',
             overrideConfig: {
                 sessionId: 'weather-session',
                 temperature: 0.7,
                 maxTokens: 500
-            }
+            },
+            streaming: false
         })
         console.log('Response with custom config:', response.text)
         if (response.sourceDocuments) {
@@ -69,57 +73,41 @@ async function streamingExample() {
         console.log('Attempting streaming request...')
         console.log('Base URL:', BASE_URL)
         console.log('Chatflow ID:', CHATFLOW_ID)
-        try {
-            const streamingCheck = await flowise.client.checkChatflowStreaming(CHATFLOW_ID)
-            console.log('Streaming support:', streamingCheck)
-        } catch (e) {
-            console.log('Could not check streaming support:', e instanceof Error ? e.message : String(e))
-        }
-        const stream = await flowise.client.predictStream(CHATFLOW_ID, {
+        const stream = await flowise.client.createPrediction({
+            chatflowId: CHATFLOW_ID,
             question: 'Tell me a joke',
             chatId: 'stream-session',
             streaming: true
         })
         console.log('Stream created successfully, reading...')
-        const reader = stream.getReader()
         let result = ''
         let chunkCount = 0
-        try {
-            let reading = true
-            while (reading) {
-                const { done, value } = await reader.read()
-                if (done) {
-                    reading = false
+        for await (const value of stream) {
+            chunkCount++
+            // Print the chunk for debugging
+            console.log(`Chunk ${chunkCount}:`, JSON.stringify(value, null, 2))
+            if (value && typeof value === 'object') {
+                if (value.event === 'token' && value.data) {
+                    result += value.data
+                    process.stdout.write(value.data)
+                } else if (value.event === 'end') {
                     console.log('Stream ended, total chunks received:', chunkCount)
-                    break
+                } else if (value.event === 'metadata') {
+                    console.log('Metadata received:', value.data)
+                } else if (value.event === 'sourceDocuments') {
+                    console.log('Source documents:', value.data)
+                } else if (value.event === 'usedTools') {
+                    console.log('Used tools:', value.data)
+                } else if (value.event === 'agentReasoning') {
+                    console.log('Agent reasoning:', value.data)
+                } else {
+                    // Fallback for unknown chunk types
+                    console.log('Unknown chunk:', value)
                 }
-                chunkCount++
-                console.log(`Chunk ${chunkCount}:`, JSON.stringify(value, null, 2))
-                if (value && typeof value === 'object') {
-                    if (value.type === 'text-delta' && value.textDelta) {
-                        result += value.textDelta
-                        process.stdout.write(value.textDelta)
-                    } else if (value.type === 'start') {
-                        console.log('Stream started')
-                    } else if (value.event === 'token' && value.data) {
-                        result += value.data
-                        process.stdout.write(value.data)
-                    } else if (value.event === 'metadata') {
-                        console.log('Metadata received:', value.data)
-                    } else if (value.event === 'sourceDocuments') {
-                        console.log('Source documents:', value.data)
-                    } else if (value.event === 'usedTools') {
-                        console.log('Used tools:', value.data)
-                    } else if (value.event === 'agentReasoning') {
-                        console.log('Agent reasoning:', value.data)
-                    }
-                } else if (value && typeof value === 'string') {
-                    result += value
-                    process.stdout.write(value)
-                }
+            } else if (value && typeof value === 'string') {
+                result += value
+                process.stdout.write(value)
             }
-        } finally {
-            reader.releaseLock()
         }
         console.log('\n\nComplete response:', result)
         console.log('Total response length:', result.length)

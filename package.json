@@ -1,6 +1,6 @@
 {
   "name": "@ahmedrowaihi/flowise-vercel-ai-sdk-provider",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0",
   "author": {
     "name": "Ahmed Rowaihi",
     "email": "ahmedrowaihi1@gmail.com",

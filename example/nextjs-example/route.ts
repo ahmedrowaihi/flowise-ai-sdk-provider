@@ -3,7 +3,8 @@ import { createFlowiseProvider } from '../../src/flowise-provider'
 
 const flowise = createFlowiseProvider({
     baseUrl: process.env.FLOWISE_BASE_URL || 'http://localhost:3000',
-    apiKey: process.env.FLOWISE_API_KEY
+    apiKey: process.env.FLOWISE_API_KEY,
+    logger: console
 })
 
 // Allow streaming responses up to 30 seconds

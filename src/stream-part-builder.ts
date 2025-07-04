@@ -1,5 +1,7 @@
-import type { LanguageModelV2StreamPart } from '@ai-sdk/provider';
+import type { LanguageModelV2StreamPart } from "@ai-sdk/provider";
 
-export function buildStreamPart<T extends LanguageModelV2StreamPart>(part: T): T {
-  return part;
-} 
+export function buildStreamPart<T extends LanguageModelV2StreamPart>(
+	part: T,
+): T {
+	return part;
+}

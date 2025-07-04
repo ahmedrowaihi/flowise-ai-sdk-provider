@@ -1,20 +1,12 @@
-export interface FlowisePredictionRequest {
-    question: string
-    chatId?: string
-    overrideConfig?: {
-        sessionId?: string
-        [key: string]: any
-    }
-    streaming?: boolean
-    uploads?: any[]
-    leadEmail?: string
-    action?: any
-    humanInput?: any
-    form?: any
-}
+import type { PredictionData } from "flowise-sdk/dist/flowise-sdk";
+import type { Logger } from "./utils";
+
+export interface FlowisePredictionRequest
+	extends Omit<PredictionData, "chatflowId"> {}
 
 export interface FlowiseClientOptions {
-    baseUrl: string
-    apiKey?: string
-    timeout?: number
+	baseUrl: string;
+	apiKey?: string;
+	timeout?: number;
+	logger?: Logger;
 }

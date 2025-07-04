@@ -1,74 +1,75 @@
 {
-  "name": "@ahmedrowaihi/flowise-vercel-ai-sdk-provider",
-  "version": "2.0.1",
-  "author": {
-    "name": "Ahmed Rowaihi",
-    "email": "ahmedrowaihi1@gmail.com",
-    "url": "https://dev.ahmedrowaihi.lol"
-  },
-  "exports": {
-    "./package.json": "./package.json",
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
-    }
-  },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
-  "sideEffects": false,
-  "scripts": {
-    "build": "unbuild",
-    "build:watch": "unbuild --watch",
-    "clean": "rm -rf dist",
-    "lint": "eslint \"./**/*.ts\"",
-    "type-check": "tsc --noEmit",
-    "prettier-check": "prettier --check \"./**/*.ts\"",
-    "prepublishOnly": "npm run build"
-  },
-  "dependencies": {
-    "flowise-sdk": "^1.0.9"
-  },
-  "devDependencies": {
-    "@types/bun": "latest",
-    "unbuild": "^3.5.0"
-  },
-  "peerDependencies": {
-    "ai": "5.0.0-beta.6",
-    "typescript": "^5",
-    "zod": "^3.0.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ahmedrowaihi/flowise-ai-sdk-provider.git"
-  },
-  "bugs": {
-    "url": "https://github.com/ahmedrowaihi/flowise-ai-sdk-provider/issues"
-  },
-  "description": "Flowise AI SDK Provider",
-  "engines": {
-    "node": ">=18"
-  },
-  "files": [
-    "dist"
-  ],
-  "homepage": "https://github.com/ahmedrowaihi/flowise-ai-sdk-provider#readme",
-  "keywords": [
-    "ai",
-    "flowise",
-    "workflow",
-    "chatflow"
-  ],
-  "license": "MIT",
-  "maintainers": [
-    {
-      "name": "Ahmed Rowaihi",
-      "email": "ahmedrowaihi1@gmail.com",
-      "url": "https://github.com/ahmedrowaihi"
-    }
-  ],
-  "publishConfig": {
-    "access": "public"
-  }
+	"name": "@ahmedrowaihi/flowise-vercel-ai-sdk-provider",
+	"version": "2.0.2",
+	"author": {
+		"name": "Ahmed Rowaihi",
+		"email": "ahmedrowaihi1@gmail.com",
+		"url": "https://dev.ahmedrowaihi.lol"
+	},
+	"exports": {
+		"./package.json": "./package.json",
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"sideEffects": false,
+	"scripts": {
+		"build": "unbuild",
+		"build:watch": "unbuild --watch",
+		"clean": "rm -rf dist",
+		"lint": "biome check",
+		"format": "biome format",
+		"type-check": "tsc --noEmit",
+		"prepublishOnly": "bun run build"
+	},
+	"dependencies": {
+		"flowise-sdk": "^1.0.9"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.0.6",
+		"@types/bun": "latest",
+		"unbuild": "^3.5.0"
+	},
+	"peerDependencies": {
+		"ai": "5.0.0-beta.6",
+		"typescript": "^5",
+		"zod": "^3.0.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ahmedrowaihi/flowise-ai-sdk-provider.git"
+	},
+	"bugs": {
+		"url": "https://github.com/ahmedrowaihi/flowise-ai-sdk-provider/issues"
+	},
+	"description": "Flowise AI SDK Provider",
+	"engines": {
+		"node": ">=18"
+	},
+	"files": [
+		"dist"
+	],
+	"homepage": "https://github.com/ahmedrowaihi/flowise-ai-sdk-provider#readme",
+	"keywords": [
+		"ai",
+		"flowise",
+		"workflow",
+		"chatflow"
+	],
+	"license": "MIT",
+	"maintainers": [
+		{
+			"name": "Ahmed Rowaihi",
+			"email": "ahmedrowaihi1@gmail.com",
+			"url": "https://github.com/ahmedrowaihi"
+		}
+	],
+	"publishConfig": {
+		"access": "public"
+	}
 }

@@ -7,10 +7,11 @@ export function convertToFlowiseMessage(prompt: LanguageModelV2Prompt): string {
         if (Array.isArray(message.content)) {
             return message.content
                 .map((content: { type: string; text?: string }) => {
-                    if (content.type === 'text') {
+                    if (content && content.type === 'text' && typeof content.text === 'string') {
                         return content.text
                     }
-                    throw new Error(`Content type ${content.type} not supported`)
+                    // Defensive: skip malformed parts
+                    return ''
                 })
                 .join('')
         }
@@ -25,10 +26,11 @@ export function convertToFlowiseMessage(prompt: LanguageModelV2Prompt): string {
             if (Array.isArray(message.content)) {
                 content = message.content
                     .map((content: { type: string; text?: string }) => {
-                        if (content.type === 'text') {
+                        if (content && content.type === 'text' && typeof content.text === 'string') {
                             return content.text
                         }
-                        throw new Error(`Content type ${content.type} not supported`)
+                        // Defensive: skip malformed parts
+                        return ''
                     })
                     .join('')
             } else {

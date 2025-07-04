@@ -27,6 +27,7 @@ export default defineBuildConfig({
   entries: [
     'src/index',
   ],
+  externals: ['json-schema','@ai-sdk/provider'],
   outDir: 'dist',
   declaration: true,
   rollup: {

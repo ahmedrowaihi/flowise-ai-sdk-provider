@@ -1,7 +1,7 @@
 import type { LanguageModelV2, ProviderV2 } from '@ai-sdk/provider'
 
 import { FlowiseChatModel } from './flowise-chat'
-import { FlowiseClient } from './flowise-client'
+import { FlowiseClient } from 'flowise-sdk'
 import type { FlowiseClientOptions } from './types'
 
 export interface FlowiseProvider extends ProviderV2 {
@@ -32,7 +32,7 @@ export function createFlowiseProvider(options: FlowiseClientOptions): FlowisePro
     const provider = Object.assign(providerFn, {
         languageModel: createChatModel,
         textEmbeddingModel: (modelId: string) => {
-            throw new Error(`Text embedding model '${modelId}' not supported by Flowise`)
+        throw new Error(`Text embedding model '${modelId}' not supported by Flowise`)
         },
         imageModel: (modelId: string) => {
             throw new Error(`Image model '${modelId}' not supported by Flowise`)
@@ -59,7 +59,3 @@ export function createFlowiseModel(options: FlowiseClientOptions & { chatflowId:
     const provider = createFlowiseProvider(providerOptions)
     return provider(chatflowId)
 }
-
-/**
- Default Flowise provider instance.
- */

@@ -6,24 +6,6 @@
     "email": "ahmedrowaihi1@gmail.com",
     "url": "https://dev.ahmedrowaihi.lol"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/flowiseai/flowise.git"
-  },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "devDependencies": {
-    "ai": "5.0.0-beta.6",
-    "@types/bun": "latest",
-    "unbuild": "^3.5.0"
-  },
-  "peerDependencies": {
-    "zod": "^3.0.0",
-    "typescript": "^5",
-    "@ai-sdk/provider": "2.0.0-beta.1",
-    "@ai-sdk/ui-utils": "2.0.0-canary.3",
-    "@ai-sdk/provider-utils": "3.0.0-beta.2"
-  },
   "exports": {
     "./package.json": "./package.json",
     ".": {
@@ -31,6 +13,37 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
     }
+  },
+
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "scripts": {
+    "build": "unbuild",
+    "build:watch": "unbuild --watch",
+    "clean": "rm -rf dist",
+    "lint": "eslint \"./**/*.ts\"",
+    "type-check": "tsc --noEmit",
+    "prettier-check": "prettier --check \"./**/*.ts\"",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "flowise-sdk": "^1.0.9"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "unbuild": "^3.5.0"
+  },
+  "peerDependencies": {
+    "ai": "5.0.0-beta.6",
+    "typescript": "^5",
+    "zod": "^3.0.0"
+  },
+
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flowiseai/flowise.git"
   },
   "bugs": {
     "url": "https://github.com/flowiseai/flowise/issues"
@@ -59,16 +72,6 @@
   ],
   "publishConfig": {
     "access": "public"
-  },
-  "scripts": {
-    "build": "unbuild",
-    "build:watch": "unbuild --watch",
-    "clean": "rm -rf dist",
-    "lint": "eslint \"./**/*.ts\"",
-    "type-check": "tsc --noEmit",
-    "prettier-check": "prettier --check \"./**/*.ts\"",
-    "prepublishOnly": "npm run build"
-  },
-  "sideEffects": false,
-  "types": "./dist/index.d.ts"
+  }
+  
 }

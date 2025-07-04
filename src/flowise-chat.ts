@@ -1,14 +1,20 @@
-import type { LanguageModelV1, LanguageModelV1CallWarning } from '@ai-sdk/provider'
+import type { LanguageModelV2, LanguageModelV2CallWarning } from '@ai-sdk/provider'
 import { convertToFlowiseMessage } from './convert-to-flowise-message'
 // import { convertFlowiseResponseToAiSdkMessage } from './convert-to-ai-sdk-message'
 import { FlowiseClient } from './flowise-client'
 import type { FlowisePredictionRequest } from './types'
 
-export class FlowiseChatModel implements LanguageModelV1 {
-    readonly specificationVersion = 'v1' as LanguageModelV1['specificationVersion']
+export class FlowiseChatModel implements LanguageModelV2 {
+    readonly specificationVersion = 'v2' as LanguageModelV2['specificationVersion']
     readonly defaultObjectGenerationMode = 'json'
     readonly supportsImageUrls = false
     readonly modelId = 'flowise-chatflow'
+
+    // Added as required by LanguageModelV2
+    readonly supportedUrls: Record<string, RegExp[]> = {
+        'http:': [/.*/],
+        'https:': [/.*/]
+    }
 
     readonly chatflowId: string
     readonly client: FlowiseClient
@@ -26,8 +32,8 @@ export class FlowiseChatModel implements LanguageModelV1 {
         return url.protocol === 'https:' || url.protocol === 'http:'
     }
 
-    private getArgs({ prompt }: Parameters<LanguageModelV1['doGenerate']>[0]) {
-        const warnings: LanguageModelV1CallWarning[] = []
+    private getArgs({ prompt }: Parameters<LanguageModelV2['doGenerate']>[0]) {
+        const warnings: LanguageModelV2CallWarning[] = []
 
         const baseArgs: FlowisePredictionRequest = {
             question: convertToFlowiseMessage(prompt),
@@ -40,37 +46,31 @@ export class FlowiseChatModel implements LanguageModelV1 {
         }
     }
 
-    async doGenerate(options: Parameters<LanguageModelV1['doGenerate']>[0]): Promise<Awaited<ReturnType<LanguageModelV1['doGenerate']>>> {
+    async doGenerate(options: Parameters<LanguageModelV2['doGenerate']>[0]): Promise<Awaited<ReturnType<LanguageModelV2['doGenerate']>>> {
         const { args, warnings } = this.getArgs(options)
 
         try {
             const response = await this.client.predict(this.chatflowId, args)
 
-            // Convert Flowise response to AI SDK message format for metadata
-            // const aiSdkMessage = convertFlowiseResponseToAiSdkMessage(response)
-
+            // Return content as an array of LanguageModelV2Content (text part)
             return {
-                text: response.text,
+                content: [{ type: 'text', text: response.text }],
                 finishReason: 'stop',
                 usage: {
-                    promptTokens: 0, // Flowise doesn't provide token usage
-                    completionTokens: 0
+                    inputTokens: 0, // Flowise doesn't provide token usage
+                    outputTokens: 0,
+                    totalTokens: 0
                 },
-                warnings,
-                rawCall: {
-                    rawPrompt: args,
-                    rawSettings: {
-                        chatflowId: this.chatflowId
-                    }
-                }
+                warnings
+                // Optionally add providerMetadata, request, response if available
             }
         } catch (error) {
             throw new Error(`Flowise API error: ${error instanceof Error ? error.message : String(error)}`)
         }
     }
 
-    async doStream(options: Parameters<LanguageModelV1['doStream']>[0]): Promise<Awaited<ReturnType<LanguageModelV1['doStream']>>> {
-        const { args, warnings } = this.getArgs(options)
+    async doStream(options: Parameters<LanguageModelV2['doStream']>[0]): Promise<Awaited<ReturnType<LanguageModelV2['doStream']>>> {
+        const { args } = this.getArgs(options)
 
         try {
             const flowiseStream = await this.client.predictStream(this.chatflowId, args)
@@ -90,7 +90,8 @@ export class FlowiseChatModel implements LanguageModelV1 {
                             if (value && typeof value === 'object' && value.type === 'text-delta' && value.textDelta) {
                                 controller.enqueue({
                                     type: 'text-delta',
-                                    textDelta: value.textDelta
+                                    id: '', // Provide an id if required by the SDK, else leave blank
+                                    delta: value.textDelta
                                 })
                             }
                         }
@@ -104,14 +105,8 @@ export class FlowiseChatModel implements LanguageModelV1 {
             })
 
             return {
-                stream,
-                warnings,
-                rawCall: {
-                    rawPrompt: args,
-                    rawSettings: {
-                        chatflowId: this.chatflowId
-                    }
-                }
+                stream
+                // Optionally add request, response if available
             }
         } catch (error) {
             throw new Error(`Flowise streaming error: ${error instanceof Error ? error.message : String(error)}`)

@@ -1,12 +1,12 @@
-import type { LanguageModelV1Prompt } from '@ai-sdk/provider'
+import type { LanguageModelV2Prompt } from '@ai-sdk/provider'
 
-export function convertToFlowiseMessage(prompt: LanguageModelV1Prompt): string {
+export function convertToFlowiseMessage(prompt: LanguageModelV2Prompt): string {
     // For simple single-message prompts, return the user message
     if (prompt.length === 1 && prompt[0]?.role === 'user') {
         const message = prompt[0]!
         if (Array.isArray(message.content)) {
             return message.content
-                .map((content) => {
+                .map((content: { type: string; text?: string }) => {
                     if (content.type === 'text') {
                         return content.text
                     }
@@ -19,12 +19,12 @@ export function convertToFlowiseMessage(prompt: LanguageModelV1Prompt): string {
 
     // For conversation history, format as a conversation
     const conversation = prompt
-        .map((message) => {
+        .map((message: { role: string; content: any }) => {
             let content: string
 
             if (Array.isArray(message.content)) {
                 content = message.content
-                    .map((content) => {
+                    .map((content: { type: string; text?: string }) => {
                         if (content.type === 'text') {
                             return content.text
                         }

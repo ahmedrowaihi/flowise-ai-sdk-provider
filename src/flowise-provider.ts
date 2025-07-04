@@ -1,16 +1,16 @@
-import type { LanguageModelV1, ProviderV1 } from '@ai-sdk/provider'
+import type { LanguageModelV2, ProviderV2 } from '@ai-sdk/provider'
 
 import { FlowiseChatModel } from './flowise-chat'
 import { FlowiseClient } from './flowise-client'
 import type { FlowiseClientOptions } from './types'
 
-export interface FlowiseProvider extends ProviderV1 {
-    (chatflowId: string): LanguageModelV1
+export interface FlowiseProvider extends ProviderV2 {
+    (chatflowId: string): LanguageModelV2
 
     /**
      Creates a model for text generation.
      */
-    chat(chatflowId: string): LanguageModelV1
+    chat(chatflowId: string): LanguageModelV2
 
     client: FlowiseClient
 }
@@ -20,27 +20,32 @@ export interface FlowiseProvider extends ProviderV1 {
  */
 export function createFlowiseProvider(options: FlowiseClientOptions): FlowiseProvider {
     const client = new FlowiseClient(options)
-
     const createChatModel = (chatflowId: string) => new FlowiseChatModel(chatflowId, client)
 
-    const provider = function (chatflowId: string) {
+    function providerFn(chatflowId: string) {
         if (new.target) {
             throw new Error('The Flowise model function cannot be called with the new keyword.')
         }
-
         return createChatModel(chatflowId)
     }
 
-    // Required ProviderV1 methods
-    provider.languageModel = createChatModel
-    provider.textEmbeddingModel = (modelId: string) => {
-        throw new Error(`Text embedding model '${modelId}' not supported by Flowise`)
-    }
-
-    // Additional methods
-    provider.chat = createChatModel
-
-    provider.client = client
+    const provider = Object.assign(providerFn, {
+        languageModel: createChatModel,
+        textEmbeddingModel: (modelId: string) => {
+            throw new Error(`Text embedding model '${modelId}' not supported by Flowise`)
+        },
+        imageModel: (modelId: string) => {
+            throw new Error(`Image model '${modelId}' not supported by Flowise`)
+        },
+        transcriptionModel: (modelId: string) => {
+            throw new Error(`Transcription model '${modelId}' not supported by Flowise`)
+        },
+        speechModel: (modelId: string) => {
+            throw new Error(`Speech model '${modelId}' not supported by Flowise`)
+        },
+        chat: createChatModel,
+        client,
+    }) as FlowiseProvider
 
     return provider
 }
@@ -49,7 +54,7 @@ export function createFlowiseProvider(options: FlowiseClientOptions): FlowisePro
  Create a Flowise model instance directly with credentials and chatflow ID.
  This is a convenience function for one-shot usage.
  */
-export function createFlowiseModel(options: FlowiseClientOptions & { chatflowId: string }): LanguageModelV1 {
+export function createFlowiseModel(options: FlowiseClientOptions & { chatflowId: string }): LanguageModelV2 {
     const { chatflowId, ...providerOptions } = options
     const provider = createFlowiseProvider(providerOptions)
     return provider(chatflowId)

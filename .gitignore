@@ -13,3 +13,4 @@ public/dist
 test-results
 dist
 .ideabun.lock
+bun.lock

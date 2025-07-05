@@ -33,8 +33,8 @@ const home = homepage || "";
 const banner = `/**\n* ${name} v${version}\n* ${description}\n* ${authorName}\n* ${license}\n* ${repoUrl}\n* ${home}\n*/\n`;
 
 export default defineBuildConfig({
-	entries: ["src/index"],
-	externals: ["json-schema", "@ai-sdk/provider"],
+	entries: ["src/index", "src/frontend"],
+	externals: ["json-schema", "@ai-sdk/provider", "ai"],
 	outDir: "dist",
 	declaration: true,
 	rollup: {
@@ -46,7 +46,7 @@ export default defineBuildConfig({
 	},
 	clean: true,
 	failOnWarn: true,
-	sourcemap: true,
+	sourcemap: false,
 	hooks: {
 		"build:done": async () => {
 			await addBannerToFiles("dist", banner);

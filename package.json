@@ -12,6 +12,11 @@
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.mjs",
 			"require": "./dist/index.cjs"
+		},
+		"./frontend": {
+			"types": "./dist/frontend.d.ts",
+			"import": "./dist/frontend.mjs",
+			"require": "./dist/frontend.cjs"
 		}
 	},
 	"main": "./dist/index.cjs",

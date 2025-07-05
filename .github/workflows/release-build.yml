@@ -23,13 +23,16 @@ jobs:
       - name: Build
         run: bun run build
 
-      - name: Generate release notes
+      - name: Generate changelog from last tag
         id: changelog
         run: |
-          echo '## Changelog' > RELEASE_BODY.md
-          if [ -f CHANGELOG.md ]; then
-            awk '/^## /{if (p) exit; p=1} p' CHANGELOG.md >> RELEASE_BODY.md
-          fi
+          CURRENT_TAG=$(git describe --tags --abbrev=0)
+          PREV_TAG=$(git tag --sort=-creatordate | sed -n '2p')
+          echo "## Changelog" > _changelog.txt
+          git log --pretty=format:'* %s (%h) - %an, %ad' --date=short ${PREV_TAG}..${CURRENT_TAG} >> _changelog.txt
+          echo "changelog<<EOF" >> $GITHUB_ENV
+          cat _changelog.txt >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
@@ -38,6 +41,6 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           release_name: ${{ github.ref_name }}
-          body_path: RELEASE_BODY.md
+          body: ${{ env.changelog }}
           draft: false
           prerelease: false
